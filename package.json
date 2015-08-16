@@ -29,9 +29,9 @@
     "gulp-webpack": "^1.5.0"
   },
   "scripts": {
-    "watch": "./node_modules/.bin/gulp watch",
+    "watch": "gulp watch",
     "start": "node server.js",
-    "build": "./node_modules/.bin/webpack --config webpack.config.production.js",
+    "build": "./node_modules/.bin/gulp webpack",
     "lint": "./node_modules/.bin/eslint ."
   }
 }

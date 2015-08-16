@@ -2,7 +2,7 @@
 var path = require('path');
 var webpack = require('webpack');
 
-var dest = './build'; // 出力先ディレクトリ
+var dest = './dist'; // 出力先ディレクトリ
 var src = './src';  // ソースディレクトリ
 
 
@@ -22,7 +22,7 @@ module.exports = {
     entry: [
       'webpack-dev-server/client?http://localhost:3000',
       'webpack/hot/only-dev-server',
-      './scripts/index'
+      './src/index'
     ],
     devtool: 'eval-source-map',
     output: {
@@ -41,7 +41,7 @@ module.exports = {
       loaders: [{
         test: /\.jsx?$/,
         loaders: ['react-hot', 'babel'],
-        include: path.join(__dirname, 'scripts')
+        include: path.join(__dirname, 'src')
       }]
     }
   }
