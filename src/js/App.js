@@ -1,7 +1,11 @@
 import React, { PropTypes } from 'react';
-import Explore from './components/Explore';
+import { Link } from 'react-router';
 import DocumentTitle from 'react-document-title';
 
+/**
+ * Page Container
+ * which contains common HTML elements like page title, navigatioin, footer
+ */
 export default class App {
   static propTypes = {
     children: PropTypes.object
@@ -11,9 +15,12 @@ export default class App {
     return (
       <DocumentTitle title='Sample App'>
         <div className='App'>
-          <Explore {...this.props} />
-          <hr />
-          {this.props.children}
+          <div class="nav">
+            <Link to="datatable">DataTable</Link>
+          </div>
+          <div class="main">
+            {this.props.children}
+          </div>
         </div>
       </DocumentTitle>
     );

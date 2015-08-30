@@ -2,8 +2,9 @@ import React, { PropTypes, Component } from 'react';
 import { Router, Route } from 'react-router';
 
 import App from './App';
-import RepoPage from './pages/RepoPage';
-import UserPage from './pages/UserPage';
+import DataTable from './components/DataTable';
+// import RepoPage from './pages/RepoPage';
+// import UserPage from './pages/UserPage';
 
 export default class Root extends Component {
   static propTypes = {
@@ -12,11 +13,11 @@ export default class Root extends Component {
 
   render() {
     const { history } = this.props;
+    // Hot module!!
     return (
       <Router history={history}>
-        <Route name='explore' path='/' component={App}>
-          <Route name='repo' path='/:login/:name' component={RepoPage} />
-          <Route name='user' path='/:login' component={UserPage} />
+        <Route name='app' path='/' component={App}>
+          <Route name="datatable" path="/datatable" component={DataTable} />
         </Route>
       </Router>
     );
