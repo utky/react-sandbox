@@ -1,6 +1,11 @@
 import React, { PropTypes } from 'react';
-import { Link } from 'react-router';
+import Router, { Link } from 'react-router';
 import DocumentTitle from 'react-document-title';
+import Navigation from './components/Navigation';
+import 'bootstrap/dist/css/bootstrap.css';
+import 'bootstrap/dist/css/bootstrap-theme.css';
+
+const RouteHandler = Router.RouteHandler;
 
 /**
  * Page Container
@@ -15,11 +20,9 @@ export default class App {
     return (
       <DocumentTitle title='Sample App'>
         <div className='App'>
-          <div class="nav">
-            <Link to="datatable">DataTable</Link>
-          </div>
+          <Navigation />
           <div class="main">
-            {this.props.children}
+            <RouteHandler/>
           </div>
         </div>
       </DocumentTitle>

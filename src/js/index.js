@@ -1,14 +1,9 @@
 import React from 'react';
-import BrowserHistory from 'react-router/lib/BrowserHistory';
-import HashHistory from 'react-router/lib/HashHistory';
-import Root from './Root';
+import Router from 'react-router';
+import routes from './routes';
 
 const rootEl = document.getElementById('root');
-// Use hash location for Github Pages
-// but switch to HTML5 history locally.
-const history = process.env.NODE_ENV === 'production' ?
-  new HashHistory() :
-  new BrowserHistory();
 
-
-React.render(<Root history={history} />, rootEl);
+Router.run(routes, Router.HistoryLocation, function (Handler) {
+  React.render(<Handler/>, rootEl);
+});

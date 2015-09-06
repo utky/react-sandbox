@@ -24,7 +24,7 @@ module.exports = {
       'webpack/hot/only-dev-server',
       './src/js/index'
     ],
-    devtool: 'eval-source-map',
+    devtool: '#source-map',
     output: {
       path: __dirname,
       filename: 'bundle.js',
@@ -46,6 +46,10 @@ module.exports = {
       {
         test: /\.css$/,
         loader: 'style-loader!css-loader',
+      },
+      {
+        test: /\.(eot|svg|ttf|woff|woff2)$/,
+        loader: 'url-loader',
       }]
     }
   }
