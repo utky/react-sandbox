@@ -21,7 +21,7 @@ export default class App {
       <DocumentTitle title='Sample App'>
         <div className='App'>
           <Navigation />
-          <div class="main">
+          <div className="container">
             <RouteHandler/>
           </div>
         </div>
