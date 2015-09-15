@@ -1,5 +1,27 @@
 import keyMirror from 'keymirror';
 
+let definitions = {
+  user: {
+    request: null,
+    success: null,
+    error: null
+  }
+};
+
+function assignValue(tree, stack) {
+  if (tree == null) {
+    stack.pop();
+    return stack.reduce((x, y) => x + '.' + y, stack);
+  }
+  else {
+    for (let key of tree) {
+      tree[key] = assignValue(tree[key], stack.push(key));
+    }
+    stack.pop();
+    return tree;
+  }
+}
+
 export default keyMirror({
   REQUEST_USER: null,
   REQUEST_USER_SUCCESS: null,
