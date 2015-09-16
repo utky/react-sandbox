@@ -15,7 +15,8 @@
     "bootstrap": "*",
     "react-datagrid": "*",
     "underscore": "*",
-    "whatwg-fetch": "*"
+    "whatwg-fetch": "*",
+    "selectn": "*"
   },
   "devDependencies": {
     "gulp": "*",
