@@ -16,7 +16,10 @@
     "react-datagrid": "*",
     "underscore": "*",
     "whatwg-fetch": "*",
-    "selectn": "*"
+    "selectn": "*",
+    "humps": "*",
+    "invariant": "*",
+    "normalizr": "*"
   },
   "devDependencies": {
     "gulp": "*",
