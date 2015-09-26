@@ -18,6 +18,20 @@ module.exports = {
     uglify: false
   },
 
+  test: {
+    jest: {
+      rootDir: '.',
+      scriptPreprocessor: "<rootDir>/node_modules/babel-jest",
+      unmockedModulePathPatterns: [
+          "<rootDir>/node_modules/react"
+      ],
+      testPathIgnorePatterns: [
+          "node_modules"
+      ],
+
+      verbose: true
+    }
+  },
   webpack: {
     entry: [
       'webpack-dev-server/client?http://localhost:3000',
@@ -40,7 +54,7 @@ module.exports = {
     module: {
       loaders: [{
         test: /\.jsx?$/,
-        loaders: ['react-hot', 'babel'],
+        loaders: ['react-hot', 'babel-loader'],
         include: path.join(path.join(__dirname, 'src'), 'js')
       },
       {

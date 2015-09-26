@@ -1,4 +1,5 @@
-import _ from 'underscore';
+import React from 'react/addons';
+
 
 export default class Lens {
 
@@ -7,77 +8,71 @@ export default class Lens {
     this.s_b_t = s_b_t;
   }
 
+  /**
+   * @param s Owner
+   * @returns a Ownee
+   */
   get(s) {
     return this.s_a(s);
   }
 
-  $(s) {
-    return this.get(s);
-  }
-
+  /**
+   * @param s Owner
+   * @param b New ownee
+   * @returns s Updated owner
+   */
   set(s, b) {
     return this.s_b_t(s, b);
   }
 
-  compose(lns) {
-    let f = (s, b) => {
-      lns.s_b_t(s, b);
+  /**
+   * @param f : function a -> b
+   * @param s
+   * @returns s
+   */
+  over(f, s) {
+    return this.set(s, f(this.get(s)))
+  }
+
+  /**
+   * this: Lens s a
+   * child: Lens a x
+   * result: Lens s x
+   */
+  compose(child) {
+    const getter = (s) => {
+      return child.get(this.get(s));
+    };
+
+    const setter = (s, b) => {
+      return this.set(s, child.set(this.get(s), b))
     };
     
-    return new Lens(_.compose(self.s_a, lns.s_a), );
+    return new Lens(getter, setter);
   }
 
 }
 
-export function lens(name, ...parameters) {
-  if (parameters 
-      && parameters.length > 0 
-      && !parameters[0] instanceof Lens) {
-  }
+export function lens(getter, setter) {
+  return new Lens(getter, setter);
+}
 
-  let newLens = function(s, b) {
+export const identity = new Lens((s) => s, (s, b) => s);
 
-    this.__name = name;
-
-    if (typeof b !== 'undefined') {
-      s[name] = b;
-    }
-    else {
-      return function(_b) {
-        s[name] = _b;
-      };
-    }
-
-    this.$ = function(data) {
-      return data[name];
-    };
+function propGet(name) {
+  return (s) => {
+    return s[name];
   };
-
-  parameters.map((child) => newLens[child.__name] = child);
 }
 
-// test
+function propSet(name) {
+  return (s, b) => {
+    let setter = {};
+    setter[name] = { $set: b };
+    return React.addons.update(s, setter);
+  };
+}
 
-
-describe('lens', function() {
-  it('', function() {
-    let data = {
-      uno: {
-        dos: {
-          tres: '4'
-        }
-      }
-    };
-
-    let l = lens('uno', 
-              lens('dos',
-                [lens('tres'),
-                lens('funf')]));
-
-    expect(l.uno.dos.tres.$(data)).toBe('4');
-    
-    expect(l.uno.dos.tres.$(l.uno.dos.tres(data, '3'))).toBe('3');
-
-
-  });
-});
+export function plens(name) {
+  return new Lens(propGet(name), propSet(name));
+}
