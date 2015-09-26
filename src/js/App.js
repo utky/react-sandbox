@@ -2,43 +2,35 @@ import React, { PropTypes } from 'react';
 import Router, { Link } from 'react-router';
 import DocumentTitle from 'react-document-title';
 import Navigation from './components/Navigation';
+import './main.css';
+import 'purecss/build/pure.css';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap/dist/css/bootstrap-theme.css';
 
-import Actions from './actions/Actions';
+import PostTweet from './components/PostTweet';
+import UserTypes from './constants/UserTypes';
+import connectToStores from './utils/connectToStores'
+import { hold } from './utils/ValueHolder';
 
 const RouteHandler = Router.RouteHandler;
+
 
 /**
  * Page Container
  * which contains common HTML elements like page title, navigatioin, footer
  */
 export default class App {
-  static propTypes = {
-    children: PropTypes.object
-  };
 
   render() {
-
-    let john = Actions.Trait.Person('john', 12);
-    var res = null;
-    if (john instanceof Actions.Trait.Person) {
-      res = 'John';
-    }
-    else {
-      res = 'Other';
-    }
-
     return (
-      <DocumentTitle title='Sample App'>
-        <div className='App'>
-          <span>{res}</span>
+      <div className='app pure-g'>
+        <div className='navigation pure-u-1-5'>
           <Navigation />
-          <div className="container">
-            <RouteHandler/>
-          </div>
         </div>
-      </DocumentTitle>
+        <div className='content pure-u-4-5'>
+          <RouteHandler/>
+        </div>
+      </div>
     );
   }
 }

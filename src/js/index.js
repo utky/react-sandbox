@@ -4,6 +4,6 @@ import routes from './routes';
 
 const rootEl = document.getElementById('root');
 
-Router.run(routes, Router.HistoryLocation, function (Handler) {
+Router.run(routes, Router.HashLocation, function (Handler) {
   React.render(<Handler/>, rootEl);
 });
