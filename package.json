@@ -19,7 +19,8 @@
     "selectn": "*",
     "humps": "*",
     "invariant": "*",
-    "normalizr": "*"
+    "normalizr": "*",
+    "purecss": "*"
   },
   "devDependencies": {
     "gulp": "*",
