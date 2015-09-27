@@ -1,26 +1,26 @@
-import { identity, plens, lens } from '../Lens';
+import { identity, plens, lens, fromObjectProperty, fromObject, propGet, propSet } from '../Lens';
 
-describe('lens category law', function() {
+describe('lens category law', () => {
 
   let f = lens(function(x) { return 1 }, function(s, b) { return 2 });
   let g = lens(function(x) { return 3 }, function(s, b) { return 4 });
   let h = lens(function(x) { return 5 }, function(s, b) { return 6 });
   let dummyS = 'anything';
 
-  it('left identity', function() {
+  it('left identity', () => {
 
     
     expect(identity.compose(f).get(dummyS)).toBe(f.get(dummyS));
 
   });
 
-  it('right identity', function() {
+  it('right identity', () => {
 
     expect(f.compose(identity).get(dummyS)).toBe(f.get(dummyS));
 
   });
 
-  it('associative', function() {
+  it('associative', () => {
 
     expect(f.compose(g).compose(h).get(dummyS))
       .toBe(f.compose(g.compose(h)).get(dummyS));
@@ -29,21 +29,21 @@ describe('lens category law', function() {
 
 });
 
-describe('property lens', function() {
+describe('property lens', () => {
 
-  it('satisfies law: 1. set s (get s) == s', function() {
+  it('satisfies law: 1. set s (get s) == s', () => {
 
     let s = {
       value: '1'
     };
 
-    let value = plens('value');
+    let valuel = plens('value');
 
-    expect(value.set(s, value.get(s)).value).toBe(s.value);
+    expect(valuel.set(s, valuel.get(s)).value).toBe(s.value);
 
   });
 
-  it('satisfies law: 2. get (set s v) == v', function() {
+  it('satisfies law: 2. get (set s v) == v', () => {
 
     let s = {
       value: '1'
@@ -55,7 +55,7 @@ describe('property lens', function() {
 
   });
 
-  it('satisfies law: 3. get (set (set s v1) v2) == v2', function() {
+  it('satisfies law: 3. get (set (set s v1) v2) == v2', () => {
 
     let s = {
       value: '1'
@@ -69,5 +69,55 @@ describe('property lens', function() {
 
 });
 
+describe('fromObjectProperty', () => {
+  it('build lens from object', () => {
+    let s = {
+      value: 1
+    };
+    expect(fromObjectProperty(s).value.get(s)).toBe(s.value);
+  });
 
+  it('build lens from nested object', () => {
+    let s = {
+      a: {
+        b: {
+          value: 1
+        }
+      }
+    };
 
+    expect(fromObjectProperty(s).a.b.value.get(s)).toBe(s.a.b.value);
+  });
+
+  it('can access sibling node by lens from nested object', () => {
+    let s = {
+      a: {
+        b: {
+          value: 1
+        }
+      },
+      c: {
+        d: {
+          value: 2
+        }
+      }
+    };
+
+    expect(fromObjectProperty(s).a.b.value.get(s))
+      .toBe(fromObjectProperty(s).c.d.value.get(s) - 1);
+
+  });
+
+  it('', () => {
+    let state = {
+      profile: {
+        name: ''
+      }
+    };
+
+    let lns = fromObjectProperty(state);
+    let result = lns.profile.name.set(state, 'new-name');
+    expect(result.profile.name).toBe('new-name');
+  });
+
+});
