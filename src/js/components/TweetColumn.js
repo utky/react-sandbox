@@ -9,12 +9,10 @@ export default class TweetColumn extends Component {
     data: PropTypes.array
   };
 
-  getDefaultProps() {
-    return {
-      totalColumns: 1,
-      data: []
-    };
-  }
+  static defaultProps = {
+    totalColumns: 1,
+    data: []
+  };
 
   render() {
 
