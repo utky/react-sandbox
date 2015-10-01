@@ -21,26 +21,6 @@ function reactSetter(selector, value) {
   }
 }
 
-/**
- * DONT USE
- */
-export class PropertyLens {
-  constructor(selector) {
-    this.selector = selector;
-  }
-  get(s) {
-    return selectn(this.selector, s);
-  }
-  set(s, b) {
-    let setter = reactSetter(this.selector, b);
-    return React.addons.update(s, setter);
-  }
-  compose(child) {
-    let composedSelector = this.selector + '.' + child.selector;
-    return new PropertyLens(composedSelector);
-  }
-}
-
 export default class Lens {
 
   /**
@@ -96,6 +76,37 @@ export default class Lens {
   }
 
 }
+/**
+ * DONT USE
+ */
+export class PropertyLens extends Lens {
+
+  constructor(selector) {
+
+    const getter = (s) => {
+      return selectn(selector, s);
+    };
+
+    const setter = (s, b) => {
+      let command = reactSetter(selector, b);
+      return React.addons.update(s, command);
+    };
+
+    super(getter, setter);
+
+    this.selector = selector;
+  }
+  compose(child) {
+    if (child instanceof PropertyLens) {
+      let composedSelector = this.selector + '.' + child.selector;
+      return new PropertyLens(composedSelector);
+    }
+    else {
+      return super.compose(child);
+    }
+  }
+}
+
 
 export function lens(getter, setter) {
   return new Lens(getter, setter);
@@ -147,7 +158,7 @@ function listenSet(lens, setCallback) {
 
 
 export function plens(name) {
-  return new Lens(propGet(name), propSet(name));
+  return new PropertyLens(name);
 }
 
 export function plensState(name, stateSetter) {
@@ -175,7 +186,6 @@ export function fromObject(mkLens, obj) {
 export function fromObjectProperty(obj) {
   const mkLens = (prop, value) => {
     return plens(prop);
-    // return new PropertyLens(prop);
   };
   let dummyLens = {
     get: (s) => {},

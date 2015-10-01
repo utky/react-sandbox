@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import { Container } from 'flux/utils'; 
 import connectToStores from '../utils/connectToStores'
 import DocumentTitle from 'react-document-title';
 import MessageStore from '../stores/MessageStore';
@@ -8,41 +9,21 @@ import EditProfile from '../components/EditProfile';
 import UserTypes from '../constants/UserTypes';
 import { lensStateLink, mapLink, mapLinkTree, fromObjectProperty } from '../utils/Lens';
 
+import ProfileStore from '../stores/ProfileStore';
+import * as LensActionCreator from '../actions/LensActionCreator';
 
-/**
- * Retrieves state from stores for current props.
- */
-function getState(props) {
-  return {
-  };
-}
 
-function getInitialState() {
-  return {
-    profile: {
-      name: '',
-      description: '',
-      url: '',
-      location: ''
-    },
-    tweet: {
-      text: ''
-    }
-  };
-}
 
-@connectToStores([MessageStore], getState)
-export default class Home extends Component {
+class Home extends Component {
 
   static propTypes = {
   };
 
-  constructor(props) {
-    super(props);
-    this.onSubmit = this.onSubmit.bind(this);
+  static getStores() { return [ProfileStore]; }
 
-    this.state = getInitialState();
-  }  
+  static calculateState(prevState) {
+    return ProfileStore.getState();
+  }
 
   onSubmit(e) {
     e.preventDefault();
@@ -50,8 +31,6 @@ export default class Home extends Component {
   }
 
   render() {
-    const tweets= MessageStore.getAll();
-
     const columnsSize = 2;
 
     const columnStyle = [
@@ -59,9 +38,30 @@ export default class Home extends Component {
             `pure-u-1-${columnsSize}`]
             .reduce((x, y) => x + ' ' + y);
 
-    const stateSetter = this.setState.bind(this);
-    const stateLens = fromObjectProperty(getInitialState());
-    const profileLinks = mapLinkTree(stateLens.profile, this.state, this.setState.bind(this));
+    const requestor = (selector) => {
+      return (v) => {
+        LensActionCreator.update(selector, v);
+      };
+    };
+    const stateLens = fromObjectProperty(ProfileStore.getInitialState());
+    const profileLinks = {
+      name: {
+        value: this.state.name,
+        requestChange: requestor('name')
+      },
+      description:{
+        value: this.state.description,
+        requestChange: requestor('description')
+      },
+      url:{
+        value: this.state.url,
+        requestChange: requestor('url')
+      },
+      location:{
+        value: this.state.location,
+        requestChange: requestor('location')
+      },
+    };
 
     return (
       <DocumentTitle title={this.props.title || 'Tweets!!'}>
@@ -71,11 +71,11 @@ export default class Home extends Component {
           </div>
           <div className='timelines tweet-columns pure-g'>
           
-            <TweetColumn data={tweets}
+            <TweetColumn data={[]}
                          title={'Home'}
                          totalColumns={columnsSize}/>
 
-            <TweetColumn data={tweets}
+            <TweetColumn data={[]}
                          title={'Mentions'}
                          totalColumns={columnsSize}/>
 
@@ -86,3 +86,5 @@ export default class Home extends Component {
   }
 }
 
+const container = Container.create(Home); 
+export default container;
