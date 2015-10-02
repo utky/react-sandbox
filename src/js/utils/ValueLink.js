@@ -1,3 +1,4 @@
+import * as LensActionCreator from '../actions/LensActionCreator';
 
 /**
  * @param value : any
@@ -22,4 +23,41 @@ function sequence(link, ...fs) {
     fs.map((f) => f(v));
   };
   return createLink(link.value, g)
+}
+
+function createLensLink(selector, value) {
+  const callback = (newValue) => {
+    LensActionCreator.update(selector, newValue);
+  };
+  return createLink(value, callback);
+}
+
+function recursiveLensLink(state, schema, selector) {
+  if (schema == null) {
+    return createLensLink(selector, state);
+  }
+  else {
+    let container = {};
+    for (let prop in schema) {
+       if (!schema.hasOwnProperty(prop)) {
+         continue;
+       }
+
+       const nextState = state[prop];
+       const nextSchema = schema[props];
+       const nextSelector = selector + '.' + prop;
+       container[prop] = recursiveLensLink(nextState, nextSchema, nextSelector);
+    }
+    return container;
+  }
+}
+
+export function lensLink(state, schema) {
+  let root = {};
+
+  for (let prop in schema) {
+    root[prop] = recursiveLensLink(state[prop], schema[prop], prop);
+  }
+
+  return root;
 }

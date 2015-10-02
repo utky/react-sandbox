@@ -1,17 +1,19 @@
-import * as AppDispatcher from '../AppDispatcher';
+import AppDispatcher from '../AppDispatcher';
 import { ReduceStore } from 'flux/utils';
-import { fromObjectProperty, plens } from '../utils/Lens';
+import LensStore from './LensStore';
+import { plens } from '../utils/Lens';
 
-const schema = {
+/**
+ * Data structure which handled by this store.
+ */
+export const schema = {
   name: null,
   description: null,
   url: null,
   location: null
 };
 
-export const lenses = fromObjectProperty(schema);
-
-
+@LensStore('lens')
 class ProrfileStore extends ReduceStore {
 
   getInitialState() {
@@ -20,14 +22,8 @@ class ProrfileStore extends ReduceStore {
 
   reduce(state, action) {
     switch (action.type) {
-      case 'lens':
-        console.log('lens action received');
-        console.log('new state');
-        const s = plens(action.selector).set(state, action.value);
-        console.log(s);
-        return s;
       default:
-        return state;
+        return this.reduceLens(state, action);
     }
   }
 

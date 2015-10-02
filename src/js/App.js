@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import Router, { Link } from 'react-router';
+import { Router, Link } from 'react-router';
 import DocumentTitle from 'react-document-title';
 import Navigation from './components/Navigation';
 import './main.css';
@@ -11,8 +11,6 @@ import PostTweet from './components/PostTweet';
 import UserTypes from './constants/UserTypes';
 import connectToStores from './utils/connectToStores'
 import { hold } from './utils/ValueHolder';
-
-const RouteHandler = Router.RouteHandler;
 
 
 /**
@@ -28,7 +26,7 @@ export default class App {
           <Navigation />
         </div>
         <div className='content pure-u-4-5'>
-          <RouteHandler/>
+          {this.props.children}
         </div>
       </div>
     );

@@ -7,27 +7,17 @@ import TweetColumn from '../components/TweetColumn';
 import PostTweet from '../components/PostTweet';
 import EditProfile from '../components/EditProfile';
 import UserTypes from '../constants/UserTypes';
-import { lensStateLink, mapLink, mapLinkTree, fromObjectProperty } from '../utils/Lens';
 
-import ProfileStore from '../stores/ProfileStore';
-import * as LensActionCreator from '../actions/LensActionCreator';
-
+import ProfileStore, { schema } from '../stores/ProfileStore';
+import { lensLink } from '../utils/ValueLink';
 
 
 class Home extends Component {
-
-  static propTypes = {
-  };
 
   static getStores() { return [ProfileStore]; }
 
   static calculateState(prevState) {
     return ProfileStore.getState();
-  }
-
-  onSubmit(e) {
-    e.preventDefault();
-    alert('Tweeting: ' + this.props.post.text.value);
   }
 
   render() {
@@ -38,30 +28,10 @@ class Home extends Component {
             `pure-u-1-${columnsSize}`]
             .reduce((x, y) => x + ' ' + y);
 
-    const requestor = (selector) => {
-      return (v) => {
-        LensActionCreator.update(selector, v);
-      };
-    };
-    const stateLens = fromObjectProperty(ProfileStore.getInitialState());
-    const profileLinks = {
-      name: {
-        value: this.state.name,
-        requestChange: requestor('name')
-      },
-      description:{
-        value: this.state.description,
-        requestChange: requestor('description')
-      },
-      url:{
-        value: this.state.url,
-        requestChange: requestor('url')
-      },
-      location:{
-        value: this.state.location,
-        requestChange: requestor('location')
-      },
-    };
+
+    console.log('current state');
+    console.log(this.state);
+    const profileLinks = lensLink(this.state, schema);
 
     return (
       <DocumentTitle title={this.props.title || 'Tweets!!'}>
@@ -70,15 +40,6 @@ class Home extends Component {
             <EditProfile links={profileLinks} />
           </div>
           <div className='timelines tweet-columns pure-g'>
-          
-            <TweetColumn data={[]}
-                         title={'Home'}
-                         totalColumns={columnsSize}/>
-
-            <TweetColumn data={[]}
-                         title={'Mentions'}
-                         totalColumns={columnsSize}/>
-
           </div>
         </div>
       </DocumentTitle>

@@ -9,7 +9,7 @@
     "react": "*",
     "react-document-title": "*",
     "react-pure-render": "*",
-    "react-router": "*",
+    "react-router": "1.0.0-rc1",
     "bootstrap": "*",
     "react-datagrid": "*",
     "underscore": "*",

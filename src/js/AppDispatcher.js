@@ -53,3 +53,7 @@ export function dispatchAsync(promise, types, action = {}) {
     error => dispatch(failure, { ...action, error })
   );
 }
+
+flux.dispatchAsync = dispatchAsync;
+
+export default flux;

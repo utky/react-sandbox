@@ -1,8 +1,9 @@
-import { dispatch } from '../AppDispatcher';
+import AppDispatcher from '../AppDispatcher';
 
 export function update(selector, value) {
-  dispatch({
+  AppDispatcher.dispatch({
     type: 'lens',
+    selector: selector,
     value: value
   });
 }
