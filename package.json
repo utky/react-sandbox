@@ -17,6 +17,7 @@
     "selectn": "*",
     "humps": "*",
     "invariant": "*",
+    "immutable": "*",
     "normalizr": "*",
     "purecss": "*"
   },

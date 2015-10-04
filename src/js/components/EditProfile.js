@@ -1,15 +1,15 @@
 import React, { Component, PropTypes } from 'react';
 import UserTypes from '../constants/UserTypes';
+import PureRender from '../utils/PureRender';
 
+@PureRender
 export default class EditProfile extends Component {
 
   static propTypes = {
-    links: PropTypes.shape({
-      name: UserTypes.valueLink,
-      description: UserTypes.valueLink,
-      url: UserTypes.valueLink,
-      location: UserTypes.valueLink
-    })
+    name: UserTypes.valueLink.isRequired,
+    description: UserTypes.valueLink.isRequired,
+    url: UserTypes.valueLink.isRequired,
+    location: UserTypes.valueLink.isRequired,
   };
 
   render() {
@@ -19,16 +19,16 @@ export default class EditProfile extends Component {
         <fieldset>
 
           <input id="name" type="text"
-            placeholder="Name" valueLink={this.props.links.name}/>
+            placeholder="Name" valueLink={this.props.name}/>
 
           <textarea id="description"
-            placeholder="Description" valueLink={this.props.links.description}></textarea>
+            placeholder="Description" valueLink={this.props.description}></textarea>
 
           <input id="url" type="text"
-            placeholder="URL" valueLink={this.props.links.url}/>
+            placeholder="URL" valueLink={this.props.url}/>
 
           <input id="location" type="text"
-            placeholder="Location" valueLink={this.props.links.location}/>
+            placeholder="Location" valueLink={this.props.location}/>
 
         </fieldset>
 

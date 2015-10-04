@@ -10,7 +10,6 @@ import 'bootstrap/dist/css/bootstrap-theme.css';
 import PostTweet from './components/PostTweet';
 import UserTypes from './constants/UserTypes';
 import connectToStores from './utils/connectToStores'
-import { hold } from './utils/ValueHolder';
 
 
 /**

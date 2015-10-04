@@ -9,7 +9,7 @@ export default function LensStore(actionType) {
       switch(action.type) {
 
         case actionType:
-          return plens(action.selector).set(state, action.value);
+          return action.lens.set(state, action.value);
 
         default:
           return state;

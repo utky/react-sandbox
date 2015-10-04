@@ -1,29 +1,33 @@
 import AppDispatcher from '../AppDispatcher';
 import { ReduceStore } from 'flux/utils';
 import LensStore from './LensStore';
-import { plens } from '../utils/Lens';
+import { fromObjectProperty } from '../utils/Lens';
+import React from 'react/addons';
 
 /**
  * Data structure which handled by this store.
  */
-export const schema = {
+export const profileScema = {
   name: null,
   description: null,
   url: null,
   location: null
 };
 
-@LensStore('lens')
+export const profileLens = fromObjectProperty(profileScema);
+
 class ProrfileStore extends ReduceStore {
 
   getInitialState() {
-    return schema;
+    return profileScema;
   }
 
   reduce(state, action) {
     switch (action.type) {
+      case 'update':
+        return React.addons.update(state, action.command);
       default:
-        return this.reduceLens(state, action);
+        return state;
     }
   }
 

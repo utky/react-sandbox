@@ -21,6 +21,18 @@ function reactSetter(selector, value) {
   }
 }
 
+export function get(lns, s) {
+  return lns.get(s);
+}
+
+export function set(lns, s, b) {
+  return lns.set(s, b);
+}
+
+export function over(lns, f, s) {
+  return lns.over(f, s);
+}
+
 export default class Lens {
 
   /**

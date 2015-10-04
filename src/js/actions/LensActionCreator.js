@@ -1,9 +1,9 @@
 import AppDispatcher from '../AppDispatcher';
 
-export function update(selector, value) {
+export function update(lens, value) {
   AppDispatcher.dispatch({
     type: 'lens',
-    selector: selector,
+    lens: lens,
     value: value
   });
 }

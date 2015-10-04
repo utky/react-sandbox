@@ -8,36 +8,40 @@ import PostTweet from '../components/PostTweet';
 import EditProfile from '../components/EditProfile';
 import UserTypes from '../constants/UserTypes';
 
-import ProfileStore, { schema } from '../stores/ProfileStore';
-import { lensLink } from '../utils/ValueLink';
+import ProfileStore from '../stores/ProfileStore';
+import * as UpdateAction from '../actions/UpdateAction';
+import { actionLink, set } from '../utils/ValueLink';
 
+/**
+ * Store: Action -> Signal ()
+ */
 
+/**
+ * Container which distribute state from Stores to Ownees
+ */
 class Home extends Component {
 
   static getStores() { return [ProfileStore]; }
 
   static calculateState(prevState) {
-    return ProfileStore.getState();
+    return {
+      profile: ProfileStore.getState()
+    };
   }
 
   render() {
-    const columnsSize = 2;
 
-    const columnStyle = [
-            'tweet-column',
-            `pure-u-1-${columnsSize}`]
-            .reduce((x, y) => x + ' ' + y);
-
-
-    console.log('current state');
-    console.log(this.state);
-    const profileLinks = lensLink(this.state, schema);
+    const linker = actionLink(UpdateAction.update, this.state.profile);
 
     return (
       <DocumentTitle title={this.props.title || 'Tweets!!'}>
         <div className='content'>
           <div id='profile'>
-            <EditProfile links={profileLinks} />
+            <EditProfile
+                name={set('name', linker)}
+                description={set('description', linker)}
+                url={set('url', linker)}
+                location={set('location', linker)} />
           </div>
           <div className='timelines tweet-columns pure-g'>
           </div>
