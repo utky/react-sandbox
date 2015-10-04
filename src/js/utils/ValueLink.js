@@ -1,9 +1,40 @@
 import React from 'react/addons';
 import selectn from 'selectn';
 import _ from 'underscore';
-import Lens from '../utils/Lens';
-import * as LensActionCreator from '../actions/LensActionCreator';
 
+
+/**
+ * Interface for React.addons.update.
+ * UpdateProtocol is a object typed as
+ *   key: string a name of protocol
+ *   value: any -> object a function which returns update command.
+ */
+export const UpdateProtocol
+    = {
+      push: (v) => ({ $push: v }),
+      unshift: (v) => ({ $unshift: v }),
+      splice: (v) => ({ $splice: v }),
+      set: (v) => ({ $set: v }),
+      merge: (v) => ({ $merge: v }),
+      apply: (v) => ({ $apply: v }),
+    };
+
+/**
+ * Build a command for `React.addons.update`.
+ *
+ * `protocol` is the funciton which takes any value and then bind to
+ * `update` command expression like `{ $set: value }`.
+ *
+ * `selector` is dot separated object property names like below.
+ * `"root.childA.childB` translated to
+ * `{ root: { childA: { childB: null } } }`
+ *
+ * `value` will be bound into `udpate` command.
+ *
+ * @param protocol: any -> object
+ * @param selector: string
+ * @param value: any
+ */
 function selectProtocol(protocol, selector, value) {
   let idx = selector.indexOf('.');
   if (idx < 0) {
@@ -20,28 +51,6 @@ function selectProtocol(protocol, selector, value) {
   }
 }
 
-class ActionLinker {
-  constructor(callback, state) {
-    this.callback = callback;
-    this.state = state;
-  }
-}
-
-export function actionLink(callback, state) {
-  return new ActionLinker(callback, state);
-}
-
-export const UpdateProtocol
-    = {
-      push: (v) => ({ $push: v }),
-      unshift: (v) => ({ $unshift: v }),
-      splice: (v) => ({ $splice: v }),
-      set: (v) => ({ $set: v }),
-      merge: (v) => ({ $merge: v }),
-      apply: (v) => ({ $apply: v }),
-    };
-
-
 function linkProtocol(protocol, selector, linker) {
   const value = selectn(selector, linker.state);
   const requestChange = (v) => {
@@ -55,15 +64,73 @@ export function set(selector, linker) {
   return linkProtocol(UpdateProtocol.set, selector, linker);
 }
 
+export function merge(selector, linker) {
+  return linkProtocol(UpdateProtocol.merge, selector, linker);
+}
+
+export function push(selector, linker) {
+  return linkProtocol(UpdateProtocol.push, selector, linker);
+}
+
+export function unshift(selector, linker) {
+  return linkProtocol(UpdateProtocol.unshift, selector, linker);
+}
+
+export function splice(selector, linker) {
+  return linkProtocol(UpdateProtocol.splice, selector, linker);
+}
+
+export function apply(selector, linker) {
+  return linkProtocol(UpdateProtocol.apply, selector, linker);
+}
+
 /**
- * type ValueLink a = (a, a -> Signal ())
- * or
- * data ValueLink a = ValueLink
- *                  { value: a
- *                  , requestChange: a -> Signal ()
- *                  }
- * in Haskell
+ * ActinLinker links value change evnet to callback.
+ *
+ * `callback` is a change event listener which receives the command for `React.addons.update`.
+ * In many cases, `callback` is the Action Creator.
+ *
+ * `state` is a source object to build valueLink.
+ * ```
+ * function updateForm(command) {
+ *   return Dispatcher({
+ *     type: 'update.some.form',
+ *     command: command
+ *   });
+ * }
+ *
+ * const links = actoinLink(updateForm, this.state);
+ * ```
+ *
  */
+class ActionLinker {
+  constructor(callback, state) {
+    this.callback = callback;
+    this.state = state;
+  }
+  set(selector) {
+    return set(selector, this);
+  }
+  merge(selector) {
+    return merge(selector, this);
+  }
+  push(selector) {
+    return push(selector, this);
+  }
+  unshift(selector) {
+    return unshift(selector, this);
+  }
+  splice(selector) {
+    return splice(selector, this);
+  }
+  apply(selector) {
+    return apply(selector, this);
+  }
+}
+
+export function actionLink(callback, state) {
+  return new ActionLinker(callback, state);
+}
 
 /**
  * @param value : any
@@ -77,69 +144,3 @@ function createLink(value, callback) {
   };
 }
 
-
-
-/**
- * @param f : any -> void
- * @parma link : object { value: *, requestChange: function }
- * @return object { value: *, requestChange: function }
- */
-function sequence(link, ...fs) {
-  const g = (v) => {
-    link.requestChange(v);
-    fs.map((f) => f(v));
-  };
-  return createLink(link.value, g)
-}
-
-function createLensLink(lens, value) {
-  const callback = (newValue) => {
-    LensActionCreator.update(lens, newValue);
-  };
-  return createLink(value, callback);
-}
-
-function recursiveLensLink(state, lenses) {
-  if (lenses == null) {
-    return createLensLink(lenses, state);
-  }
-  else {
-    let container = {};
-    for (let prop in lens) {
-       if (!schema.hasOwnProperty(prop)) {
-         continue;
-       }
-
-       const nextState = state[prop];
-       const nextSchema = schema[props];
-       const nextSelector = selector + '.' + prop;
-       container[prop] = recursiveLensLink(nextState, nextSchema, nextSelector);
-    }
-    return container;
-  }
-}
-
-
-export function lensLink(state, lenses) {
-  let root = {};
-
-  for (let prop in lenses) {
-    root[prop] = recursiveLensLink(state[prop], lenses[prop], prop);
-  }
-
-  return root;
-}
-
-
-function traverseObject(f, obj, prop='') {
-  if (!obj || !_.isObject(obj)) {
-    return f(obj, prop);
-  }
-
-  return _.mapObject(obj, (val, key) => {
-    if (!obj.hasOwnProperty(key)) {
-      return val;
-    }
-    return traverseObject(f, val, key);
-  });
-}

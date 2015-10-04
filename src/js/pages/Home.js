@@ -38,10 +38,10 @@ class Home extends Component {
         <div className='content'>
           <div id='profile'>
             <EditProfile
-                name={set('name', linker)}
-                description={set('description', linker)}
+                name={linker.set('name')}
+                description={linker.set('description')}
                 url={set('url', linker)}
-                location={set('location', linker)} />
+                location={linker.set('location')} />
           </div>
           <div className='timelines tweet-columns pure-g'>
           </div>
