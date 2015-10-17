@@ -1,4 +1,6 @@
-import { identity, plens, lens, fromObjectProperty, fromObject, propGet, propSet } from '../Lens';
+import { identity, ilens, plens, lens, fromObjectProperty, fromObject, propGet, propSet } from '../Lens';
+
+import im from 'immutable';
 
 describe('lens category law', () => {
 
@@ -118,6 +120,86 @@ describe('fromObjectProperty', () => {
     let lns = fromObjectProperty(state);
     let result = lns.profile.name.set(state, 'new-name');
     expect(result.profile.name).toBe('new-name');
+  });
+
+});
+
+
+describe('property ImmutableLens', () => {
+
+  it('satisfies law: 1. set s (get s) == s', () => {
+
+    let s = im.fromJS({
+      value: '1'
+    });
+
+    let valuel = ilens('value');
+
+    expect(valuel.set(s, valuel.get(s)).value).toBe(s.value);
+
+  });
+
+  it('satisfies law: 2. get (set s v) == v', () => {
+
+    let s = im.fromJS({
+      value: '1'
+    });
+
+    let value = ilens('value');
+
+    expect(value.get(value.set(s, 2))).toBe(2);
+
+  });
+
+  it('satisfies law: 3. get (set (set s v1) v2) == v2', () => {
+
+    let s = im.fromJS({
+      value: '1'
+    });
+
+    let value = ilens('value');
+
+    expect(value.get(value.set(value.set(s, 2), 3))).toBe(3);
+
+  });
+
+  it('can get value from Map', () => {
+    const m = im.Map({a: 1, b: 2});
+    const l = ilens('a');
+    expect(l.get(m)).toBe(m.get('a'));
+  });
+
+  it('can get value from Record', () => {
+    const r = im.Record({a: null, b: null});
+    const m = new r({a: 1, b: 2});
+    const l = ilens('a');
+    expect(l.get(m)).toBe(m.get('a'));
+  });
+
+  it('can compose with other ilens and get value', () => {
+    const s = im.fromJS({
+      value: '1',
+      other: {
+        value: '2'
+      }
+    });
+    const value = ilens('value');
+    const other = ilens('other');
+    expect(other.compose(value).get(s)).toBe(s.get('other').get('value'));
+  });
+
+  it('can compose with other ilens and set value', () => {
+    const s = im.fromJS({
+      value: '1',
+      other: {
+        value: '2'
+      }
+    });
+    const value = ilens('value');
+    const other = ilens('other');
+    const composed = other.compose(value);
+    const setval = '3'
+    expect(composed.get(composed.set(s, setval))).toBe(setval);
   });
 
 });

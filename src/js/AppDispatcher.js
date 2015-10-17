@@ -90,5 +90,4 @@ class AppDispatcher extends Dispatcher {
   }
 }
 
-const instance = new AppDispatcher();
-export default instance;
+export default flux;

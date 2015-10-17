@@ -1,15 +1,15 @@
 import React, { Component, PropTypes } from 'react';
-import UserTypes from '../constants/UserTypes';
-import PureRender from '../utils/PureRender';
+import ImmutableRender from '../utils/ImmutableRender';
 
-@PureRender
+
+@ImmutableRender
 export default class EditProfile extends Component {
 
   static propTypes = {
-    name: UserTypes.valueLink.isRequired,
-    description: UserTypes.valueLink.isRequired,
-    url: UserTypes.valueLink.isRequired,
-    location: UserTypes.valueLink.isRequired,
+    name: PropTypes.object,
+    description: PropTypes.object,
+    url: PropTypes.object,
+    location: PropTypes.object,
   };
 
   render() {
@@ -19,16 +19,16 @@ export default class EditProfile extends Component {
         <fieldset>
 
           <input id="name" type="text"
-            placeholder="Name" valueLink={this.props.name}/>
+            placeholder="Name" {...this.props.name} />
 
           <textarea id="description"
-            placeholder="Description" valueLink={this.props.description}></textarea>
+            placeholder="Description" {...this.props.description}></textarea>
 
           <input id="url" type="text"
-            placeholder="URL" valueLink={this.props.url}/>
+            placeholder="URL" {...this.props.url}/>
 
           <input id="location" type="text"
-            placeholder="Location" valueLink={this.props.location}/>
+            placeholder="Location" {...this.props.location}/>
 
         </fieldset>
 

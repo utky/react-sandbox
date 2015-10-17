@@ -10,11 +10,42 @@ import UserTypes from '../constants/UserTypes';
 
 import ProfileStore from '../stores/ProfileStore';
 import * as UpdateAction from '../actions/UpdateAction';
-import { actionLink, set } from '../utils/ValueLink';
+import * as LensAction from '../actions/LensActionCreator';
+import { createLink, actionLink, set } from '../utils/ValueLink';
+import im from 'immutable';
+import ActionTypes from '../constants/ActionTypes';
+
+function makeAction(type) {
+  return (v) => { LensAction.update(type, v); };
+}
 
 /**
  * Store: Action -> Signal ()
  */
+const listeners = {
+  name: makeAction(ActionTypes.profile.name.update),
+  description: makeAction(ActionTypes.profile.description.update),
+  url: makeAction(ActionTypes.profile.url.update),
+  location: makeAction(ActionTypes.profile.location.update),
+};
+
+const debugChange = (x) => {
+  console.log('value changed');
+  console.log(x);
+};
+
+function makeListener() {
+}
+
+function profileProps(state) {
+  const profile = state.profile;
+  return {
+    name: createLink(profile.get('name'), listeners.name),
+    description: createLink(profile.get('description'), listeners.description),
+    url: createLink(profile.get('url'), listeners.url),
+    location: createLink(profile.get('location'), listeners.location)
+  };
+}
 
 /**
  * Container which distribute state from Stores to Ownees
@@ -31,17 +62,11 @@ class Home extends Component {
 
   render() {
 
-    const linker = actionLink(UpdateAction.update, this.state.profile);
-
     return (
       <DocumentTitle title={this.props.title || 'Tweets!!'}>
         <div className='content'>
           <div id='profile'>
-            <EditProfile
-                name={linker.set('name')}
-                description={linker.set('description')}
-                url={set('url', linker)}
-                location={linker.set('location')} />
+            <EditProfile {...profileProps(this.state)} />
           </div>
           <div className='timelines tweet-columns pure-g'>
           </div>

@@ -12,7 +12,7 @@ webpackConfig.devtool = 'inline-source-map';
 module.exports = function(config) {
   config.set({
     
-    logLevel: config.LOG_DEBUG,
+    logLevel: config.LOG_INFO,
 
     // base path that will be used to resolve all patterns (eg. files, exclude)
     basePath: '.',

@@ -89,6 +89,26 @@ export default class Lens {
 
 }
 /**
+ *
+ */
+export class ImmutableLens extends Lens {
+  constructor(field) {
+    const getter = (s) => {
+      return s.get(field);
+    };
+    const setter = (s, b) => {
+      return s.set(field, b);
+    };
+    super(getter, setter);
+    this.field = field;
+  }
+}
+
+export function ilens(field) {
+  return new ImmutableLens(field);
+}
+
+/**
  * DONT USE
  */
 export class PropertyLens extends Lens {

@@ -2,6 +2,35 @@ import React from 'react/addons';
 import selectn from 'selectn';
 import _ from 'underscore';
 
+class Attribute {
+  constructor(name, constraints) {
+  }
+}
+
+class Field {
+  constructor(name) {
+    this.name = name;
+  }
+}
+
+class Schema {
+}
+
+function arrayOf(elementSchema) {
+}
+
+function field(name, composedSchema) {
+}
+
+function schema(...fields) {
+}
+
+/**
+ *
+ */
+function formalise(props) {
+}
+
 
 /**
  * Interface for React.addons.update.
@@ -137,10 +166,12 @@ export function actionLink(callback, state) {
  * @parma callback : any -> void
  * @return object { value: *, requestChange: function }
  */
-function createLink(value, callback) {
+export function createLink(value, callback) {
   return {
     value: value,
-    requestChange: callback
+    onChange: (e) => {
+      return callback(e.target.value);
+    }
   };
 }
 
