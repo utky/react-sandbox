@@ -6,6 +6,9 @@ let definitions = {
     url: { update: null },
     location: { update: null }
   },
+  posttweet: {
+    text: { update: null }
+  },
   user: {
     request: null,
     success: null,

@@ -1,40 +1,24 @@
 import im from 'immutable';
+import _ from 'underscore';
+import { deepEqual } from './Equality';
 
 export default function ImmutableRender(Component) {
   Component.prototype.shouldComponentUpdate = shouldImmutableComponentUpdate;
   return Component;
 };
 
+
 function shouldImmutableComponentUpdate(nextProps, nextState) {
-  return !shallowEqual(this.props, nextProps, im.is) || !shallowEqual(this.state, nextState, im.is);
+  // return !deepEqual(this.props, nextProps) || !deepEqual(this.state, nextState);
+  const propsEq = deepEqual(this.props, nextProps);
+  const stateEq = deepEqual(this.state, nextState);
+  console.log('current props');
+  console.log(this.props);
+  console.log('next props');
+  console.log(nextProps);
+  const eq = !propsEq || !stateEq;
+  console.log('check props equals');
+  console.log(eq);
+  return eq;
 }
-
-
-function shallowEqual(objA, objB, predicate) {
-  if (objA === objB || predicate(objA, objB)) {
-    return true;
-  }
-
-  if (typeof objA !== 'object' || objA === null || typeof objB !== 'object' || objB === null) {
-    return false;
-  }
-
-  var keysA = Object.keys(objA);
-  var keysB = Object.keys(objB);
-
-  if (keysA.length !== keysB.length) {
-    return false;
-  }
-
-  // Test for A's keys different from B.
-  var bHasOwnProperty = Object.prototype.hasOwnProperty.bind(objB);
-  for (var i = 0; i < keysA.length; i++) {
-    if (!bHasOwnProperty(keysA[i]) || !predicate(objA[keysA[i]], objB[keysA[i]])) {
-      return false;
-    }
-  }
-
-  return true;
-}
-
 

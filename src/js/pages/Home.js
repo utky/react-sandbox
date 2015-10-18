@@ -8,6 +8,7 @@ import PostTweet from '../components/PostTweet';
 import EditProfile from '../components/EditProfile';
 import UserTypes from '../constants/UserTypes';
 
+import TweetStore from '../stores/TweetStore';
 import ProfileStore from '../stores/ProfileStore';
 import * as UpdateAction from '../actions/UpdateAction';
 import * as LensAction from '../actions/LensActionCreator';
@@ -27,6 +28,7 @@ const listeners = {
   description: makeAction(ActionTypes.profile.description.update),
   url: makeAction(ActionTypes.profile.url.update),
   location: makeAction(ActionTypes.profile.location.update),
+  text: makeAction(ActionTypes.posttweet.text.update),
 };
 
 const debugChange = (x) => {
@@ -35,6 +37,15 @@ const debugChange = (x) => {
 };
 
 function makeListener() {
+
+}
+
+function postTweetProps(state) {
+  const postTweet = state.postTweet;
+  return {
+    text: createLink(postTweet.get('text'), listeners.text),
+    onSubmit: (e) => console.log(e.target.value)
+  };
 }
 
 function profileProps(state) {
@@ -52,11 +63,12 @@ function profileProps(state) {
  */
 class Home extends Component {
 
-  static getStores() { return [ProfileStore]; }
+  static getStores() { return [TweetStore, ProfileStore]; }
 
   static calculateState(prevState) {
     return {
-      profile: ProfileStore.getState()
+      profile: ProfileStore.getState(),
+      postTweet: TweetStore.getState()
     };
   }
 
@@ -67,6 +79,9 @@ class Home extends Component {
         <div className='content'>
           <div id='profile'>
             <EditProfile {...profileProps(this.state)} />
+          </div>
+          <div>
+            <PostTweet {...postTweetProps(this.state)} />
           </div>
           <div className='timelines tweet-columns pure-g'>
           </div>

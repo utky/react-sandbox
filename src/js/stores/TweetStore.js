@@ -11,11 +11,8 @@ import _ from 'underscore';
 /**
  * Data structure which handled by this store.
  */
-const profileScema = {
-  name: null,
-  description: null,
-  url: null,
-  location: null
+const postSchema = {
+  text: null,
 };
 
 /**
@@ -25,28 +22,19 @@ function makeLens(schema) {
   return _.mapObject(schema, (v, k) => ilens(k));
 }
 
-const profileLens = makeLens(profileScema);
+const postLens = makeLens(postSchema);
 
-class ProrfileStore extends ReduceStore {
+class TweetStore extends ReduceStore {
 
   getInitialState() {
-    return im.fromJS(profileScema);
+    return im.fromJS(postSchema);
   }
 
   reduce(state, action) {
     switch (action.type) {
 
-      case ActionTypes.profile.name.update:
-        return profileLens.name.set(state, action.value);
-
-      case ActionTypes.profile.description.update:
-        return profileLens.description.set(state, action.value);
-
-      case ActionTypes.profile.url.update:
-        return profileLens.url.set(state, action.value);
-
-      case ActionTypes.profile.location.update:
-        return profileLens.location.set(state, action.value);
+      case ActionTypes.posttweet.text.update:
+        return postLens.text.set(state, action.value);
 
       default:
         return state;
@@ -54,5 +42,5 @@ class ProrfileStore extends ReduceStore {
   }
 }
 
-const instance = new ProrfileStore(AppDispatcher);
+const instance = new TweetStore(AppDispatcher);
 export default instance;
