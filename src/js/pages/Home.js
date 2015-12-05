@@ -6,6 +6,7 @@ import MessageStore from '../stores/MessageStore';
 import TweetColumn from '../components/TweetColumn';
 import PostTweet from '../components/PostTweet';
 import EditProfile from '../components/EditProfile';
+import MultiSelect from '../components/MultiSelect';
 import UserTypes from '../constants/UserTypes';
 
 import TweetStore from '../stores/TweetStore';
@@ -74,6 +75,15 @@ class Home extends Component {
 
   render() {
 
+    const multiSelectOptions = [
+      { label: 1, checked: true, value: { foo: 'foo1', bar: 'bar2' } },
+      { label: 2, checked: false, value: { foo: 'foo2', bar: 'bar2' } },
+    ];
+
+    const onChangeMultiSelect = (e, props) => {
+      console.log(props.value, e.target.checked);
+    };
+
     return (
       <DocumentTitle title={this.props.title || 'Tweets!!'}>
         <div className='content'>
@@ -82,6 +92,9 @@ class Home extends Component {
           </div>
           <div>
             <PostTweet {...postTweetProps(this.state)} />
+          </div>
+          <div>
+            <MultiSelect options={multiSelectOptions} onChange={onChangeMultiSelect} />
           </div>
           <div className='timelines tweet-columns pure-g'>
           </div>
